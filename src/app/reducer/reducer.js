@@ -13,6 +13,7 @@ const initialState = {
   passwordError: false,
   confirmPassword: '',
   confirmPasswordError: false,
+  otp: '',
 };
 
 const signupReducer = (state = initialState, action) => {
@@ -48,6 +49,11 @@ const signupReducer = (state = initialState, action) => {
       return {
         ...state,
         confirmPassword: action.payload,
+      };
+    case 'SET_OTP':
+      return {
+        ...state,
+        otp: action.payload,
       };
 
     case 'SET_ER_NAME':

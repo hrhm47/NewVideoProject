@@ -82,7 +82,9 @@ const ImageViewer = () => {
       style={{
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 50,
+        // marginTop: 50,
+        backgroundColor: '#333',
+        height:"100%"
       }}>
       {isImage ? (
         <View style={{backgroundColor: 'red'}}>
@@ -165,7 +167,9 @@ const ImageViewer = () => {
         }}>
         <Text style={{color: 'black'}}>Image Video</Text>
       </TouchableOpacity>
-      <View style={{flex: 1}}></View>
+      <View style={{flex: 1}}>
+        <Text style={{color: 'white'}}>WELCOME TO PROFIL</Text>
+      </View>
     </View>
   );
 };

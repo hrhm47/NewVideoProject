@@ -5,8 +5,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import SignUp from './src/screens/SignUp';
 import LogIn from './src/screens/LogIn';
+import ImageViewer from './src/screens/ImageViewer';
+
+
 import {Provider} from 'react-redux';
 import store from './src/app/store/store';
+import OTPFScreen from './src/screens/OTPFScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +23,9 @@ function App() {
             initialRouteName="SignUp"
             screenOptions={{headerShown:false}}>
             <Stack.Screen name="SignUp" component={SignUp} />
-            <Stack.Screen name="LogIn" component={LogIn} />
+            <Stack.Screen name="LogIn" component={LogIn} /> 
+            <Stack.Screen name="ImageViewer" component={ImageViewer} /> 
+            <Stack.Screen name="OTPFScreen" component={OTPFScreen} /> 
           </Stack.Navigator>
         </NavigationContainer>
         {/* <SignUp /> */}

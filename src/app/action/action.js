@@ -39,6 +39,14 @@ const addConfirmPassword = text => {
   };
 };
 
+const addOtp = text => {
+  return{
+    type: 'SET_OTP',
+    payload: text
+  }
+}
+
+
 // user errors will be handled here
 
 const addERName = err => {
@@ -91,6 +99,7 @@ const actionFunctions = {
     addEmail,
     addPassword,
     addConfirmPassword,
+    addOtp,
     addERName,
     addERCnic,
     addERPicture,

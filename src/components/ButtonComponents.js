@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View,TouchableOpacity,Alert } from 'react-native'
 import React from 'react'
 
-const ButtonComponents = ({validateForm,BtnName,mute}) => {
-  console.log(mute,"mute");
+const ButtonComponents = ({validateForm,BtnName}) => {
+  
   return (
     <View style={{width:"100%", alignItems:"center",marginBottom:10}}>
      <TouchableOpacity
@@ -16,12 +16,13 @@ const ButtonComponents = ({validateForm,BtnName,mute}) => {
             // opacity:mute?1:.5
           }}
           onPress={() => {
-            // if(mute){
-              validateForm();
-              // console.log('btn clicked in mute mood');
-            // }else{
-              // console.log('btn clicked in unmute mood');
+            // if (BtnName==="Log In") {
+            //   console.log("btn name is log in");
+            //   // validateForm("Log In");
             // }
+              validateForm();
+              // Alert.alert("Button is working")
+              
           }}>
           <Text style={{fontSize: 20, color: '#fff', fontWeight:"600"}}>{BtnName}</Text>
         </TouchableOpacity>

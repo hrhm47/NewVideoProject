@@ -18,6 +18,7 @@ import {
   View,
   StatusBar,
   Platform,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -27,7 +28,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import ButtonComponents from '../components/ButtonComponents';
 
 import {useNavigation} from '@react-navigation/native';
-import SignUpAuth from '../app/auth/authFile';
+import {SignUpAuth} from '../app/auth/authFile';
 // import validateForm from '../components/ValidationFunction';
 
 const SignUp = () => {
@@ -50,40 +51,45 @@ const SignUp = () => {
       } else if (response.assets) {
         console.log(response.assets[0]);
         dispatch(actionFunctions.ACFC.addPicture(response.assets[0]));
+        dispatch(actionFunctions.ACFC.addERPicture(false));
       }
     });
   };
 
-  const validateForm = () => {
+  const validateForm = async() => {
     // SignUpAuth()
     // console.log('data', data);
 
     const validRegex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
       
-    if (data.fullName==null) {
+      // image checking
+      if (data.pictureUri === null) {
+        dispatch(actionFunctions.ACFC.addERPicture(true));
+      } else {
+        dispatch(actionFunctions.ACFC.addERPicture(false));
+      }
+      
+      const checkString = /^[a-zA-Z\s]{6,}$/;
+    // fullname checking
+    if (
+      data.fullName === null ||
+      data.fullName.length < 1 ||
+      !data.fullName.match(checkString)
+    ) {
       dispatch(actionFunctions.ACFC.addERName(true));
-      
     } else {
-      if (data.fullName.length >= 6){
-
-        dispatch(actionFunctions.ACFC.addERName(false))
-      }else{
-
+      if (data.fullName.length >= 6) {
+        dispatch(actionFunctions.ACFC.addERName(false));
+      } else {
         dispatch(actionFunctions.ACFC.addERName(true));
       }
-       
     }
     //cninc checking
-    if (data.CNIC != null) {
-      if (!isNaN(data.CNIC)) {
-        if (data.CNIC.length === 13) {
-          dispatch(actionFunctions.ACFC.addERCnic(false));
-        } else {
-          console.log('cnic', data.CNIC.length);
-          dispatch(actionFunctions.ACFC.addERCnic(true));
-        }
+
+    if (data.CNIC != null && !isNaN(data.CNIC)) {
+      if (data.CNIC.length === 13) {
+        dispatch(actionFunctions.ACFC.addERCnic(false));
       } else {
         dispatch(actionFunctions.ACFC.addERCnic(true));
       }
@@ -92,7 +98,7 @@ const SignUp = () => {
     }
 
     // email checking
-    if (data.email==null) {
+    if (data.email == null) {
       dispatch(actionFunctions.ACFC.addEREmail(true));
     } else {
       data.email.match(validRegex)
@@ -100,15 +106,15 @@ const SignUp = () => {
         : dispatch(actionFunctions.ACFC.addEREmail(true));
     }
     // password checking
-    if(data.password!=null){
-    if (data.password.length < 8) {
-      dispatch(actionFunctions.ACFC.addERPassword(true));
+    if (data.password != null) {
+      if (data.password.length < 8) {
+        dispatch(actionFunctions.ACFC.addERPassword(true));
+      } else {
+        dispatch(actionFunctions.ACFC.addERPassword(false));
+      }
     } else {
-      dispatch(actionFunctions.ACFC.addERPassword(false));
+      dispatch(actionFunctions.ACFC.addERPassword(true));
     }
-  }else{
-    dispatch(actionFunctions.ACFC.addERPassword(true));
-  }
     // confirm password checking
     if (data.confirmPassword.length != null) {
       if (data.confirmPassword.length < 8) {
@@ -124,38 +130,64 @@ const SignUp = () => {
       dispatch(actionFunctions.ACFC.addERConfirmPassword(true));
     }
 
-
     globalFieldsChecker();
   };
 
+  const globalFieldsChecker = () => {
+    if (
+      data.fullName.trim() === '' ||
+      data.CNIC.trim() === '' ||
+      data.email.trim() === '' ||
+      data.password.trim() === '' ||
+      data.confirmPassword.trim() === '' ||
+      data.pictureUri === null
+    ) {
+      console.log('One or more fields are empty');
+      return;
+    } else {
+      if (data.fullNameError || data.cnicError || data.emailError || data.passwordError || data.confirmPasswordError || data.pictureUriError) {
+        // console.log('hello in error mode', data.fullNameError, data.cnicError, data.emailError, data.passwordError, data.confirmPasswordError, data.pictureUriError);
+        return;
+      } 
+      else {
+        // console.log('hello in zero error mode');
+        SignUpAuth(
+          data.fullName,
+          data.CNIC,
+          data.email,
+          data.password,
+          data.confirmPassword,
+          data.pictureUri,
+        )
+          .then(res => {
+            // console.log('response on signup form', res);
+            if (res.success){
+              Alert.alert("Successfully Registerd ",data.fullName+" Your Account Is Please Login To Continue", [
+                {
+                  text: "OK",
+                  onPress: () => navigation.navigate('LogIn'),
+                  style: "default"
+                },
+              ])
+            }else{
+              Alert.alert("Please Try Again ",res.message,  [
+                {
+                  text: "OK",
+                  onPress: () => {},
+                  style: "cancel",
+                },
+                
+              ])
+            }
 
-const globalFieldsChecker=()=>{
-  if ((data.fullNameError || data.cnicError || data.emailError || data.passwordError || data.confirmPasswordError || data.pictureUriError)===true ) {
-    // setButtonFlag(false);
-    console.log("eror in feilds");
-  }
-  else{
-    // setButtonFlag(true);
-    console.log("no error in fields");
-    SignUpAuth(
-      data.fullName,
-      data.CNIC,
-      data.email,
-      data.password,
-      data.confirmPassword,
-      data.pictureUri,
-    )
-    // .then((res)=>{
-    //   console.log("response on signup form", res);
-    // })
-  }
-}
-
-
-
-
-
-
+            // navigation.navigate('LogIn');
+          })
+          .catch(error => {
+            console.log('error', error);
+          });
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
@@ -163,7 +195,7 @@ const globalFieldsChecker=()=>{
         <Text style={styles.registrationText}>Registration Form</Text>
         <TouchableOpacity
           onPress={() => openGallery()}
-          style={styles.imageClick}>
+          style={styles.imageClick(data.pictureUriError)}>
           {data.pictureUri ? (
             <Image
               source={{uri: data.pictureUri.uri}}
@@ -181,7 +213,7 @@ const globalFieldsChecker=()=>{
         <ButtonComponents
           validateForm={validateForm}
           BtnName="Submit"
-          mute={ButtonFlag}
+          
         />
         <View
           style={{
@@ -193,6 +225,7 @@ const globalFieldsChecker=()=>{
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('LogIn');
+              
             }}>
             <Text style={[styles.alreadyAccText, {color: 'yellow'}]}>
               {' '}
@@ -223,15 +256,15 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#fff',
   },
-  imageClick: {
+  imageClick: error => ({
     width: 150,
     height: 150,
-    backgroundColor: 'green',
+    backgroundColor: error ? 'red' : 'green',
     borderRadius: 100,
     marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }),
   imageStyle: {
     width: 150,
     height: 150,

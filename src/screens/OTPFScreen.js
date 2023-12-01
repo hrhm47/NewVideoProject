@@ -38,14 +38,16 @@ const OTPFScreen = () => {
   };
 
   confirmPassword = () => {
-    Reset_Password(data.email.data.password, data.confirmPassword).then(res => {
+    Reset_Password(data.email,data.password, data.confirmPassword).then(res => {
       if (res.success) {
         setOtp('');
         navigation.navigate('LogIn');
       } else {
         Alert.alert('Issue in passowrd', res.success);
       }
-    });
+    }).catch(err=>{
+        console.log('error in reset password',err);
+    })
     // setOtp('Reset_Password');
   };
   return (
@@ -93,6 +95,7 @@ const OTPFScreen = () => {
               placeholder="Enter your Password"
               identifier="Password"
              marginBottom={15}
+             color="#333"
             />
 
             <TextInputField
@@ -100,9 +103,10 @@ const OTPFScreen = () => {
               placeholder="Confirm Password"
               identifier="ConfirmPassword"
               marginBottom={0}
+              color={"#333"}
             />
           </View>
-          <ButtonComponents BtnName={'Confirm'} validateForm={validateOTP} />
+          <ButtonComponents BtnName={'Confirm'} validateForm={confirmPassword} />
         </View>
       )}
     </View>

@@ -125,8 +125,8 @@ const LogInAuth = async (email, password) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: email,
-        password: password,
+        "email": email,
+        "password": password,  
       }),
     });
 
@@ -209,7 +209,7 @@ const Reset_Password=async(email,newPassword,confirmPassword)=>{
       body:JSON.stringify({
         "email":email,
         "newPassword":newPassword,
-        "confirmPassword":confirmPassword
+        "confirmNewPassword":confirmPassword
       })
     });
 

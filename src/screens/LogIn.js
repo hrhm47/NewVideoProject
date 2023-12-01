@@ -23,7 +23,7 @@ const LogIn = () => {
 
   const navigation = useNavigation();
   const ValidateLogin = () => {
-    // console.log("data",data.email, data.password);
+    console.log("data",data.email, data.password);
       // LogInAuth("qwerty@qwerty.qwerty", '12345678').then((res)=>{
       LogInAuth(data.email, data.password).then((res)=>{
         console.log("res", res);
